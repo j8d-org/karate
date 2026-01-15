@@ -1,6 +1,6 @@
 package mock.contract;
 
-import com.intuit.karate.JsonUtils;
+import io.karatelabs.common.Json;
 import com.intuit.karate.demo.config.ServerStartedInitializingBean;
 import java.util.Collection;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class PaymentService {
             Shipment shipment = new Shipment();
             shipment.setPaymentId(id);
             shipment.setStatus("shipped");
-            QueueUtils.send(queueName, JsonUtils.toJson(shipment), 25);
+            QueueUtils.send(queueName, Json.of(shipment).toString(), 25);
             return payment;
         }
 

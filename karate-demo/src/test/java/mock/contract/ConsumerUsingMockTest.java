@@ -1,6 +1,6 @@
 package mock.contract;
 
-import com.intuit.karate.JsonUtils;
+import io.karatelabs.common.Json;
 import com.intuit.karate.core.MockServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ class ConsumerUsingMockTest {
         assertEquals(result.getAmount(), 5.67, 0);
         assertEquals(result.getDescription(), "test one");
         consumer.listen(json -> {
-            Shipment shipment = JsonUtils.fromJson(json, Shipment.class);
+            Shipment shipment = (Shipment) Json.fromJson(json, Shipment.class.getName());
             assertEquals(result.getId(), shipment.getPaymentId());
             assertEquals("shipped", shipment.getStatus()); 
             synchronized(this) {

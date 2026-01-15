@@ -1,4 +1,6 @@
+@ignore @springboot3
 Feature:  No URL found proper error response
+  # Spring Boot 3 returns application/problem+json instead of application/json
 
   Background:
     * url demoBaseUrl

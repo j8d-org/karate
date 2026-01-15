@@ -48,21 +48,21 @@ Scenario: cookie as json
     Then status 200
     And match response[0] contains { name: 'foo', value: 'bar' }
 
-Scenario: cookie returned has dots in the domain which violates RFC 2109
+Scenario: cookie with domain (RFC 6265 strips leading dot)
     Given path 'search', 'cookies'
     And cookie foo = { value: 'bar' }
     And param domain = '.abc.com'
     When method get
     Then status 200
-    And match response[0] contains { name: 'foo', value: 'bar', domain: '.abc.com' }
+    And match response[0] contains { name: 'foo', value: 'bar', domain: 'abc.com' }
 
-Scenario: cookie returned has dots in the domain which violates RFC 2109
+Scenario: cookie with domain (RFC 6265 strips leading dot)
     Given path 'search', 'cookies'
     And cookie foo = { value: 'bar' }
     And param domain = '.abc.com'
     When method get
     Then status 200
-    And match response[0] contains { name: 'foo', value: 'bar', domain: '.abc.com' }
+    And match response[0] contains { name: 'foo', value: 'bar', domain: 'abc.com' }
 
 Scenario: non-expired cookie is in response
     * def futureDate =
@@ -82,7 +82,7 @@ Scenario: non-expired cookie is in response
     And param domain = '.abc.com'
     When method get
     Then status 200
-    And match response[0] contains { name: 'foo', value: 'bar', domain: '.abc.com' }
+    And match response[0] contains { name: 'foo', value: 'bar', domain: 'abc.com' }
 
 Scenario: max-age is -1, cookie should persist.
     Given path 'search', 'cookies'
@@ -90,4 +90,4 @@ Scenario: max-age is -1, cookie should persist.
     And param domain = '.abc.com'
     When method get
     Then status 200
-    And match response[0] contains { name: 'foo', value: 'bar', domain: '.abc.com' }
+    And match response[0] contains { name: 'foo', value: 'bar', domain: 'abc.com' }

@@ -1,6 +1,6 @@
 package mock.contract;
 
-import com.intuit.karate.JsonUtils;
+import io.karatelabs.common.Json;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -50,14 +50,14 @@ public class Consumer {
             con.setRequestMethod("POST");
             con.setDoOutput(true);
             con.setRequestProperty("Content-Type", "application/json");
-            String json = JsonUtils.toJson(payment);
+            String json = Json.of(payment).toString();
             IOUtils.write(json, con.getOutputStream(), "utf-8");
             int status = con.getResponseCode();
             if (status != 200) {
                 throw new RuntimeException("status code was " + status);
             }
             String content = IOUtils.toString(con.getInputStream(), "utf-8");
-            return JsonUtils.fromJson(content, Payment.class);
+            return (Payment) Json.fromJson(content, Payment.class.getName());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

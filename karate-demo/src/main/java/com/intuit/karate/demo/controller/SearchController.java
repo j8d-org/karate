@@ -30,9 +30,9 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,7 +84,9 @@ public class SearchController {
             String domain = request.getParameter("domain");
             for (Cookie cookie: cookies) {
                 if (domain != null) {
-                    cookie.setDomain(domain);
+                    // RFC 6265 requires no leading dot; strip it for compatibility
+                    String normalizedDomain = domain.startsWith(".") ? domain.substring(1) : domain;
+                    cookie.setDomain(normalizedDomain);
                 }
                 response.addCookie(cookie);
             }

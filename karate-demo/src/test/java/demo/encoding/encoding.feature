@@ -28,7 +28,9 @@ Scenario: append trailing / to url
     Then status 200
     And match response == 'hello/'
 
+@ignore @springboot3
 Scenario: path escapes special characters
+    # Spring Boot 3/Tomcat 10.x rejects URL-encoded special chars
     Given url demoBaseUrl
     And path 'encoding', '"<>#{}|\^[]`'
     When method get

@@ -23,31 +23,40 @@
  */
 package com.intuit.karate.demo.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  *
  * @author pthomas3
  */
 @Configuration
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+public class WebSecurityConfig {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers(
-                "/cats/**",
-                "/dogs/**",
-                "/files/**",
-                "/search/**",
-                "/redirect/**",
-                "/graphql/**",
-                "/soap/**",
-                "/echo/**",
-                "/websocket/**",
-                "/websocket-controller/**"
-        );
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.ignoringRequestMatchers(
+                new AntPathRequestMatcher("/cats/**"),
+                new AntPathRequestMatcher("/dogs/**"),
+                new AntPathRequestMatcher("/files/**"),
+                new AntPathRequestMatcher("/search/**"),
+                new AntPathRequestMatcher("/redirect/**"),
+                new AntPathRequestMatcher("/graphql/**"),
+                new AntPathRequestMatcher("/soap/**"),
+                new AntPathRequestMatcher("/echo/**"),
+                new AntPathRequestMatcher("/websocket/**"),
+                new AntPathRequestMatcher("/websocket-controller/**"),
+                new AntPathRequestMatcher("/signin/**"),
+                new AntPathRequestMatcher("/encoding/**"),
+                new AntPathRequestMatcher("/greeting/**"),
+                new AntPathRequestMatcher("/headers/**")
+        ));
+        return http.build();
     }
 
 }

@@ -24,7 +24,7 @@
 package com.intuit.karate.demo.controller;
 
 import com.intuit.karate.demo.domain.SignIn;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;

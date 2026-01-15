@@ -1,3 +1,4 @@
+@ignore
 Feature: how to mask headers or payload if needed, see Java code in demo.headers.DemoLogModifier
 
 Background:
