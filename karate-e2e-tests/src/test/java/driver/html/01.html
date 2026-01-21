@@ -7,8 +7,9 @@
   </head>
   <body>
     <script ka:scope="global">
-      session.counter01 = session.counter01 || 0;
-      session.counter01++;
+      // v2: initialize session if not already present
+      if (!session) { context.init() }
+      session.counter01 = (session.counter01 || 0) + 1;
     </script>    
     <div>this page has been loaded
       <span th:text="session.counter01" id="pageLoadCount"></span> times
