@@ -357,60 +357,108 @@ public class ScenarioRuntime implements Runnable {
     //==========================================================================
     //
     public void beforeRun() {
+        System.out.println("[KARATE-DEBUG] beforeRun() ENTERED for scenario: " + scenario.getName());
         if (featureRuntime.caller.isNone() && featureRuntime.suite.isAborted()) {
+            System.out.println("[KARATE-DEBUG] beforeRun(): suite.isAborted=true, setting skipped=true and returning");
             skipped = true;
             return;
         }
         steps = skipBackground ? scenario.getSteps() : scenario.getStepsIncludingBackground();
+        System.out.println("[KARATE-DEBUG] beforeRun(): steps.size=" + steps.size() + ", skipBackground=" + skipBackground);
         ScenarioEngine.set(engine);
-        engine.init();
+        try {
+            engine.init();
+            System.out.println("[KARATE-DEBUG] beforeRun(): engine.init() completed successfully");
+        } catch (Exception e) {
+            System.out.println("[KARATE-DEBUG] beforeRun(): engine.init() THREW EXCEPTION: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
         result.setExecutorName(Thread.currentThread().getName());
         result.setStartTime(System.currentTimeMillis());
+        System.out.println("[KARATE-DEBUG] beforeRun(): dryRun=" + dryRun);
         if (!dryRun) {
+            System.out.println("[KARATE-DEBUG] beforeRun(): caller.isNone()=" + caller.isNone() +
+                ", caller.isKarateConfigDisabled()=" + caller.isKarateConfigDisabled());
             if (caller.isNone() && !caller.isKarateConfigDisabled()) {
                 // evaluate config js, variables above will apply !
+                System.out.println("[KARATE-DEBUG] beforeRun(): evaluating config JS files...");
                 evalConfigJs(featureRuntime.suite.karateBase, "karate-base.js");
                 evalConfigJs(featureRuntime.suite.karateConfig, "karate-config.js");
                 evalConfigJs(featureRuntime.suite.karateConfigEnv, "karate-config-" + featureRuntime.suite.env + ".js");
+                System.out.println("[KARATE-DEBUG] beforeRun(): config JS evaluation complete");
+            }
+            System.out.println("[KARATE-DEBUG] beforeRun(): about to call beforeScenario hooks, hooks.size=" +
+                featureRuntime.suite.hooks.size());
+            int hookIdx = 0;
+            for (RuntimeHook h : featureRuntime.suite.hooks) {
+                System.out.println("[KARATE-DEBUG] beforeRun(): hook[" + hookIdx++ + "] = " + h.getClass().getName() +
+                    " @" + System.identityHashCode(h));
             }
             skipped = !featureRuntime.suite.hooks.stream()
-                    .map(h -> h.beforeScenario(this))
+                    .map(h -> {
+                        System.out.println("[KARATE-DEBUG] beforeRun(): calling beforeScenario on hook: " +
+                            h.getClass().getName() + " @" + System.identityHashCode(h));
+                        boolean result = h.beforeScenario(this);
+                        System.out.println("[KARATE-DEBUG] beforeRun(): beforeScenario returned: " + result);
+                        return result;
+                    })
                     .reduce(Boolean.TRUE, Boolean::logicalAnd);
+            System.out.println("[KARATE-DEBUG] beforeRun(): after beforeScenario hooks, skipped=" + skipped);
             if (skipped) {
                 logger.debug("beforeScenario hook returned false, will skip scenario: {}", scenario);
             } else {
                 evaluateScenarioName();
             }
+        } else {
+            System.out.println("[KARATE-DEBUG] beforeRun(): dryRun=true, skipping beforeScenario hooks");
         }
+        System.out.println("[KARATE-DEBUG] beforeRun() EXITING, skipped=" + skipped);
     }
 
     @Override
     public void run() {
+        System.out.println("[KARATE-DEBUG] run() ENTERED for scenario: " + scenario.getName() +
+            ", steps=" + (steps == null ? "null" : steps.size()) + ", skipped=" + skipped);
         try { // make sure we call afterRun() even on crashes
             // and operate countdown latches, else we may hang the parallel runner
             if (steps == null) {
+                System.out.println("[KARATE-DEBUG] run(): steps is null, calling beforeRun()");
                 beforeRun();
+                System.out.println("[KARATE-DEBUG] run(): beforeRun() returned, steps=" +
+                    (steps == null ? "null" : steps.size()) + ", skipped=" + skipped);
+            } else {
+                System.out.println("[KARATE-DEBUG] run(): steps already set (size=" + steps.size() +
+                    "), skipping beforeRun()");
             }
             if (skipped) {
+                System.out.println("[KARATE-DEBUG] run(): skipped=true, returning early");
                 return;
             }
             int count = steps.size();
+            System.out.println("[KARATE-DEBUG] run(): starting step loop, count=" + count + ", stepIndex=" + stepIndex);
             int index = 0;
             while ((index = nextStepIndex()) < count) {
                 currentStep = steps.get(index);
+                System.out.println("[KARATE-DEBUG] run(): executing step " + index + ": " + currentStep.getText());
                 execute(currentStep);
                 if (currentStepResult != null) { // can be null if debug step-back or hook skip
                     result.addStepResult(currentStepResult);
                 }
             }
+            System.out.println("[KARATE-DEBUG] run(): step loop completed normally");
         } catch (Exception e) {
+            System.out.println("[KARATE-DEBUG] run(): EXCEPTION caught: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             if (currentStepResult != null) {
                 result.addStepResult(currentStepResult);
             }
             logError("scenario [run] failed\n" + StringUtils.throwableToString(e));
             currentStepResult = result.addFakeStepResult("scenario [run] failed", e);
         } finally {
+            System.out.println("[KARATE-DEBUG] run(): finally block, skipped=" + skipped);
             if (!skipped) {
+                System.out.println("[KARATE-DEBUG] run(): calling afterRun()");
                 afterRun();
                 if (isFailed() && engine.getConfig().isAbortSuiteOnFailure()) {
                     featureRuntime.suite.abort();
@@ -420,6 +468,7 @@ public class ScenarioRuntime implements Runnable {
                 logAppender.close(); // reclaim memory
             }
         }
+        System.out.println("[KARATE-DEBUG] run() EXITING");
     }
 
     public StepResult execute(Step step) {
