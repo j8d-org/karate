@@ -365,55 +365,78 @@ public class ScenarioRuntime implements Runnable {
         }
         steps = skipBackground ? scenario.getSteps() : scenario.getStepsIncludingBackground();
         System.out.println("[KARATE-DEBUG] beforeRun(): steps.size=" + steps.size() + ", skipBackground=" + skipBackground);
-        ScenarioEngine.set(engine);
+        System.out.flush();
         try {
-            engine.init();
-            System.out.println("[KARATE-DEBUG] beforeRun(): engine.init() completed successfully");
-        } catch (Exception e) {
-            System.out.println("[KARATE-DEBUG] beforeRun(): engine.init() THREW EXCEPTION: " + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        }
-        result.setExecutorName(Thread.currentThread().getName());
-        result.setStartTime(System.currentTimeMillis());
-        System.out.println("[KARATE-DEBUG] beforeRun(): dryRun=" + dryRun);
-        if (!dryRun) {
-            System.out.println("[KARATE-DEBUG] beforeRun(): caller.isNone()=" + caller.isNone() +
-                ", caller.isKarateConfigDisabled()=" + caller.isKarateConfigDisabled());
-            if (caller.isNone() && !caller.isKarateConfigDisabled()) {
-                // evaluate config js, variables above will apply !
-                System.out.println("[KARATE-DEBUG] beforeRun(): evaluating config JS files...");
-                evalConfigJs(featureRuntime.suite.karateBase, "karate-base.js");
-                evalConfigJs(featureRuntime.suite.karateConfig, "karate-config.js");
-                evalConfigJs(featureRuntime.suite.karateConfigEnv, "karate-config-" + featureRuntime.suite.env + ".js");
-                System.out.println("[KARATE-DEBUG] beforeRun(): config JS evaluation complete");
+            ScenarioEngine.set(engine);
+            System.out.println("[KARATE-DEBUG] beforeRun(): ScenarioEngine.set() done");
+            System.out.flush();
+            try {
+                engine.init();
+                System.out.println("[KARATE-DEBUG] beforeRun(): engine.init() completed successfully");
+                System.out.flush();
+            } catch (Exception e) {
+                System.out.println("[KARATE-DEBUG] beforeRun(): engine.init() THREW EXCEPTION: " + e.getMessage());
+                System.out.flush();
+                e.printStackTrace();
+                throw e;
             }
-            System.out.println("[KARATE-DEBUG] beforeRun(): about to call beforeScenario hooks, hooks.size=" +
-                featureRuntime.suite.hooks.size());
-            int hookIdx = 0;
-            for (RuntimeHook h : featureRuntime.suite.hooks) {
-                System.out.println("[KARATE-DEBUG] beforeRun(): hook[" + hookIdx++ + "] = " + h.getClass().getName() +
-                    " @" + System.identityHashCode(h));
-            }
-            skipped = !featureRuntime.suite.hooks.stream()
-                    .map(h -> {
-                        System.out.println("[KARATE-DEBUG] beforeRun(): calling beforeScenario on hook: " +
-                            h.getClass().getName() + " @" + System.identityHashCode(h));
-                        boolean result = h.beforeScenario(this);
-                        System.out.println("[KARATE-DEBUG] beforeRun(): beforeScenario returned: " + result);
-                        return result;
-                    })
-                    .reduce(Boolean.TRUE, Boolean::logicalAnd);
-            System.out.println("[KARATE-DEBUG] beforeRun(): after beforeScenario hooks, skipped=" + skipped);
-            if (skipped) {
-                logger.debug("beforeScenario hook returned false, will skip scenario: {}", scenario);
+            result.setExecutorName(Thread.currentThread().getName());
+            result.setStartTime(System.currentTimeMillis());
+            System.out.println("[KARATE-DEBUG] beforeRun(): dryRun=" + dryRun);
+            System.out.flush();
+            if (!dryRun) {
+                System.out.println("[KARATE-DEBUG] beforeRun(): caller.isNone()=" + caller.isNone() +
+                    ", caller.isKarateConfigDisabled()=" + caller.isKarateConfigDisabled());
+                System.out.flush();
+                if (caller.isNone() && !caller.isKarateConfigDisabled()) {
+                    // evaluate config js, variables above will apply !
+                    System.out.println("[KARATE-DEBUG] beforeRun(): evaluating config JS files...");
+                    System.out.flush();
+                    evalConfigJs(featureRuntime.suite.karateBase, "karate-base.js");
+                    evalConfigJs(featureRuntime.suite.karateConfig, "karate-config.js");
+                    evalConfigJs(featureRuntime.suite.karateConfigEnv, "karate-config-" + featureRuntime.suite.env + ".js");
+                    System.out.println("[KARATE-DEBUG] beforeRun(): config JS evaluation complete");
+                    System.out.flush();
+                }
+                System.out.println("[KARATE-DEBUG] beforeRun(): about to call beforeScenario hooks, hooks.size=" +
+                    featureRuntime.suite.hooks.size());
+                System.out.flush();
+                int hookIdx = 0;
+                for (RuntimeHook h : featureRuntime.suite.hooks) {
+                    System.out.println("[KARATE-DEBUG] beforeRun(): hook[" + hookIdx++ + "] = " + h.getClass().getName() +
+                        " @" + System.identityHashCode(h));
+                    System.out.flush();
+                }
+                skipped = !featureRuntime.suite.hooks.stream()
+                        .map(h -> {
+                            System.out.println("[KARATE-DEBUG] beforeRun(): calling beforeScenario on hook: " +
+                                h.getClass().getName() + " @" + System.identityHashCode(h));
+                            System.out.flush();
+                            boolean result = h.beforeScenario(this);
+                            System.out.println("[KARATE-DEBUG] beforeRun(): beforeScenario returned: " + result);
+                            System.out.flush();
+                            return result;
+                        })
+                        .reduce(Boolean.TRUE, Boolean::logicalAnd);
+                System.out.println("[KARATE-DEBUG] beforeRun(): after beforeScenario hooks, skipped=" + skipped);
+                System.out.flush();
+                if (skipped) {
+                    logger.debug("beforeScenario hook returned false, will skip scenario: {}", scenario);
+                } else {
+                    evaluateScenarioName();
+                }
             } else {
-                evaluateScenarioName();
+                System.out.println("[KARATE-DEBUG] beforeRun(): dryRun=true, skipping beforeScenario hooks");
+                System.out.flush();
             }
-        } else {
-            System.out.println("[KARATE-DEBUG] beforeRun(): dryRun=true, skipping beforeScenario hooks");
+            System.out.println("[KARATE-DEBUG] beforeRun() EXITING normally, skipped=" + skipped);
+            System.out.flush();
+        } catch (Throwable t) {
+            System.out.println("[KARATE-DEBUG] beforeRun() CAUGHT THROWABLE: " + t.getClass().getName() + ": " + t.getMessage());
+            System.out.flush();
+            t.printStackTrace();
+            throw t;
         }
-        System.out.println("[KARATE-DEBUG] beforeRun() EXITING, skipped=" + skipped);
     }
 
     @Override
