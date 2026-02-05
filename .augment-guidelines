@@ -1,0 +1,40 @@
+# Karate Fork (j8d-org/karate)
+
+This is a fork of [karatelabs/karate](https://github.com/karatelabs/karate) maintained by j8d-org.
+
+## Purpose
+
+This fork contains GraalVM version upgrades needed for compatibility with the karate-debug project's polyglot debugging features.
+
+## Git Remotes
+
+- `origin` - Upstream karatelabs/karate (read-only reference)
+- `j8d-org` - Our fork at j8d-org/karate (push here)
+
+## Creating PRs Within This Fork
+
+GitHub's default PR behavior targets the upstream repo. To create a PR within this fork:
+
+```bash
+gh pr create --repo j8d-org/karate --base master --head <branch-name> --title "PR Title"
+```
+
+Or merge directly to master for simple changes:
+
+```bash
+git checkout master
+git merge <branch-name>
+git push j8d-org master
+```
+
+## Tagging Releases
+
+When creating a new release tag:
+
+```bash
+git tag v1.5.2-j8d.X
+git push j8d-org v1.5.2-j8d.X
+```
+
+The tag format is `v{karate-version}-j8d.{patch}` where patch increments for each change we make.
+
