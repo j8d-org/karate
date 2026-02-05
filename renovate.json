@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended"
   ],
-  "description": "Renovate config for j8d-org/karate fork - enables dependency updates"
+  "description": "Renovate config for j8d-org/karate fork - enables dependency updates",
+  "forkProcessing": "enabled"
 }
 
