@@ -42,7 +42,7 @@
         <dependency>
             <groupId>com.linecorp.armeria</groupId>
             <artifactId>armeria</artifactId>
-            <version>1.33.4</version>
+            <version>1.36.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
