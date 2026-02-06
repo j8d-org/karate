@@ -69,7 +69,7 @@ dependencies {
     compile 'org.springframework:spring-jdbc:' + springVersion
     compile 'org.springframework:spring-websocket:' + springVersion
     compile 'com.github.java-json-tools:json-schema-validator:2.2.14'
-    compile 'commons-io:commons-io:2.5'
+    compile 'commons-io:commons-io:2.21.0'
     runtime 'com.h2database:h2:1.4.200'
     testImplementation 'junit:junit'
     testImplementation 'io.karatelabs:karate-junit5:' + karateVersion
