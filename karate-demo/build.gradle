@@ -1,7 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '1.5.22.RELEASE'
-        springVersion = '4.3.30.RELEASE'
+        springVersion = '7.0.3'
         gradleVersionProperty = '4.1'
         karateVersion = '1.5.2'
         masterThoughtVersion = '3.20.0'
