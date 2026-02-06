@@ -5,7 +5,7 @@ buildscript {
         gradleVersionProperty = '4.1'
         karateVersion = '1.5.2'
         masterThoughtVersion = '3.8.0'
-        activeMqVersion = '5.15.2'
+        activeMqVersion = '5.19.1'
     }
     repositories {
         maven { url 'https://plugins.gradle.org/m2/' }
