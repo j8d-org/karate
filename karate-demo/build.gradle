@@ -4,7 +4,7 @@ buildscript {
         springVersion = '4.3.30.RELEASE'
         gradleVersionProperty = '4.1'
         karateVersion = '1.5.2'
-        masterThoughtVersion = '3.20.0'
+        masterThoughtVersion = '5.10.2'
         activeMqVersion = '6.2.0'
     }
     repositories {
