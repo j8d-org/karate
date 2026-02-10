@@ -11,12 +11,12 @@
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     
-    <properties>        
-        <javacpp.version>1.5.3</javacpp.version>
-        <opencv.version>4.3.0</opencv.version>
-        <tesseract.version>4.1.1</tesseract.version>
+    <properties>
+        <javacpp.version>1.5.12</javacpp.version>
+        <opencv.version>4.11.0</opencv.version>
+        <tesseract.version>5.5.1</tesseract.version>
         <ffmpeg.version>4.2.2</ffmpeg.version>
-    </properties>      
+    </properties>
 
     <dependencies>                         
         <dependency>
