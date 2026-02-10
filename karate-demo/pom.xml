@@ -9,7 +9,7 @@
     </parent>
     
     <artifactId>karate-demo</artifactId>
-    <packaging>jar</packaging>  
+    <packaging>jar</packaging>  <!-- trigger rebuild -->
     
     <properties>
         <activemq.version>5.19.1</activemq.version>
