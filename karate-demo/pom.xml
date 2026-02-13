@@ -12,7 +12,7 @@
     <packaging>jar</packaging>  <!-- trigger rebuild -->
     
     <properties>
-        <activemq.version>5.19.1</activemq.version>
+        <activemq.version>5.19.2</activemq.version>
         <jaxb.version>2.3.0</jaxb.version>
     </properties>
 
