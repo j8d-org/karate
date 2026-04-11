@@ -82,7 +82,7 @@
         <dependency>
             <groupId>net.masterthought</groupId>
             <artifactId>cucumber-reporting</artifactId>
-            <version>5.10.2</version>
+            <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
         <!-- cucumber-reporting 5.10.2 requires Jackson 2.15+ for StreamReadConstraints
